@@ -4,6 +4,8 @@ import Pokemon from "./components/Pokemon";
 import Pesquisa from "./components/Pesquisa";
 import { Pokemons_array } from "./utils/apiPokemon";
 import React, { useEffect, useState } from "react";
+// import Footer from "./components/footer";
+import FimJanela from "./utils/FimDaJanela";
 
 /**Só vai ser executado, caso nenhum pokemon seja pesquisado, vai renderizar os 15 primeiros da lista que vem da api*/
 function TopPopular({ pokemon }) {
@@ -21,7 +23,12 @@ function App() {
     Pokemons_array().then((obj) => {
       setLista(obj);
     });
+    // finaliza o componete
+    return () => {
+      window.removeEventListener("scroll", FimJanela);
+    };
   }, []);
+  window.addEventListener("scroll", FimJanela);
   return (
     <>
       <Header>

@@ -1,7 +1,7 @@
 var listaP = [];
 async function PegarPokemon() {
   const pokemons = await (
-    await fetch("https://pokeapi.co/api/v2/pokemon?limit=15")
+    await fetch("https://pokeapi.co/api/v2/pokemon?limit=20")
   ).json();
   return pokemons.results;
 }

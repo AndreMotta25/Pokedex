@@ -1,25 +1,32 @@
+import { handleGenerateBG } from "../../utils/cores";
 import "./style.css";
-function Pokemon({ children }) {
-  const { nome, img, hp, efeito, df, atk, ataque } = children;
-  return (
-    <div id="card-container" className="borda">
-      <div className="header">
-        <h2 className="titulo fonte">{nome}</h2>
-        <span className="hp fonte">{hp}</span>
+function Pokemon({ nome }) {
+  if (nome) {
+    const { name, sprites, stats, types } = nome;
+    return (
+      <div
+        id="card-container"
+        className="borda"
+        style={{ backgroundColor: handleGenerateBG(types[0].type.name) }}
+      >
+        <div className="header">
+          <h2 className="titulo fonte">{name}</h2>
+          <span className="hp fonte">HP {stats[0].base_stat}</span>
+        </div>
+        <img src={sprites.front_default} alt={name} className="pokemon-image" />
+        <h3 className="atk fonte">{}</h3>
+        <ul className="info-pokemon">
+          <li className="status fonte borda" style={{ background: "#2D76E4" }}>
+            DF {stats[2].base_stat}
+          </li>
+          <li className="status fonte borda" style={{ background: "#F14949" }}>
+            ATK {stats[1].base_stat}
+          </li>
+        </ul>
       </div>
-      <img src={img} alt={nome} className="pokemon-image" />
-      <h3 className="atk fonte">{ataque}</h3>
-      <p className="efeito">{efeito}</p>
-      {/* depois vou fazer essa parte virar um componente */}
-      <ul className="info-pokemon">
-        <li className="status fonte borda" style={{ background: "#2D76E4" }}>
-          {df}
-        </li>
-        <li className="status fonte borda" style={{ background: "#F14949" }}>
-          {atk}
-        </li>
-      </ul>
-    </div>
-  );
+    );
+  } else {
+    return null;
+  }
 }
 export default Pokemon;

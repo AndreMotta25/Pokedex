@@ -2,50 +2,49 @@ import Container from "./components/Container";
 import Header from "./components/Header";
 import Pokemon from "./components/Pokemon";
 import Pesquisa from "./components/Pesquisa";
-const pokemons = [
-  {
-    nome: "Shuckle",
-    hp: "HP 100",
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/213.png",
-    ataque: "ATAQUE BIND",
-    efeito:
-      " Inflicts regular damage. For the next 2–5 turns, the target cannot leave the field and is damaged for 1/16 its max HP at the end of each turn....",
-    df: "DF 100",
-    atk: "ATK 100",
-  },
-  {
-    nome: "sneasel",
-    hp: "HP 50",
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/215.png",
-    ataque: "ice-punch",
-    efeito:
-      " Inflicts regular damage.  Has a $effect_chance% chance to freeze the target.",
-    df: "DF 150",
-    atk: "ATK 80",
-  },
-  {
-    nome: "ditto",
-    hp: "HP 70",
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png",
-    ataque: "ice-punch",
-    efeito:
-      " Inflicts regular damage.  Has a $effect_chance% chance to freeze the target.",
-    df: "DF 150",
-    atk: "ATK 80",
-  },
-];
+import { Pokemons_array } from "./utils/apiPokemon";
+import React, { useEffect, useState } from "react";
+
+/**Só vai ser executado, caso nenhum pokemon seja pesquisado, vai renderizar os 15 primeiros da lista que vem da api*/
+function TopPopular({ pokemon }) {
+  return pokemon.map((poke) => <Pokemon key={poke.name} nome={poke} />);
+}
 
 function App() {
+  const [lista, setLista] = useState([]);
+  const [pokemonPesquisado, setPokemonPesquisado] = useState(null);
+  /*
+  Quando este useEffect for acionado, o fetch vai pegar alguns pokemons da api pokeApi por meio da função 
+  Pokemons_array 
+  */
+  useEffect(() => {
+    Pokemons_array().then((obj) => {
+      setLista(obj);
+    });
+  }, []);
   return (
     <>
       <Header>
         <img src="./fotos/pokedex.png" alt="Pokedex" />
-        <Pesquisa />
+        {/* 
+           A função1 de state que passamos para o componente Pesquisa, serve para renderizar o pokemon pesquisado
+           quando o botão for clicado.
+           //  
+           Já a função2 serve para que quando o pokemon pesquisado  não for mais satisfatorio, só do usuario apagar todo o nome do pokemon
+           volte para a 'pagina principal'. O mesmo para o listaArray
+        */}
+        <Pesquisa
+          funcao1={setPokemonPesquisado}
+          funcao2={setLista}
+          listaArray={lista}
+        />
       </Header>
       <Container classe="container-pokemon">
-        <Pokemon>{pokemons[0]}</Pokemon>
-        <Pokemon>{pokemons[1]}</Pokemon>
-        <Pokemon>{pokemons[2]}</Pokemon>
+        {/* A renderização vai ser condicional */}
+        {!pokemonPesquisado && <TopPopular pokemon={lista} />}
+        {typeof pokemonPesquisado === "object" && (
+          <Pokemon nome={pokemonPesquisado} />
+        )}
       </Container>
     </>
   );

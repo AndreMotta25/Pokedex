@@ -4,31 +4,42 @@ import Pokemon from "./components/Pokemon";
 import Pesquisa from "./components/Pesquisa";
 import { Pokemons_array } from "./utils/apiPokemon";
 import React, { useEffect, useState } from "react";
-// import Footer from "./components/footer";
-import FimJanela from "./utils/FimDaJanela";
 
 /**Só vai ser executado, caso nenhum pokemon seja pesquisado, vai renderizar os 15 primeiros da lista que vem da api*/
 function TopPopular({ pokemon }) {
   return pokemon.map((poke) => <Pokemon key={poke.name} nome={poke} />);
 }
-
 function App() {
   const [lista, setLista] = useState([]);
   const [pokemonPesquisado, setPokemonPesquisado] = useState(null);
+
+  /**é responsavel pelo lazy-initialization, toda vez que eu chegar ao fim da pagina, mas 10 pokemons são 
+   renderizados*/
+  const lazy = async () => {
+    const TamanhoWindow = window.innerHeight;
+    const TamanhoBody = document.body.getBoundingClientRect().bottom;
+    if (TamanhoWindow === TamanhoBody) {
+      const pokemons = await Pokemons_array();
+      console.log(pokemons);
+      // acho que aqui estou fazendo o spread
+      setLista([...pokemons]);
+    }
+  };
   /*
   Quando este useEffect for acionado, o fetch vai pegar alguns pokemons da api pokeApi por meio da função 
   Pokemons_array 
   */
   useEffect(() => {
-    Pokemons_array().then((obj) => {
-      setLista(obj);
-    });
-    // finaliza o componete
+    if (lista.length <= 0) {
+      Pokemons_array().then((obj) => {
+        setLista(obj);
+      });
+    }
     return () => {
-      window.removeEventListener("scroll", FimJanela);
+      window.removeEventListener("scroll", lazy);
     };
-  }, []);
-  window.addEventListener("scroll", FimJanela);
+  }, [lista]);
+  window.addEventListener("scroll", lazy);
   return (
     <>
       <Header>

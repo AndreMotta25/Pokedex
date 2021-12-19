@@ -1,11 +1,12 @@
 var listaP = [];
+let proximo = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
 async function PegarPokemon() {
-  const pokemons = await (
-    await fetch("https://pokeapi.co/api/v2/pokemon?limit=20")
-  ).json();
+  const pokemons = await (await fetch(proximo)).json();
+  proximo = pokemons.next;
   return pokemons.results;
 }
 async function Pokemons_array() {
+  // listaP.splice(0, listaP.length);
   const pokemons = await PegarPokemon();
   await Promise.all(
     /*   ========== Explicação do codigo ===========*/
@@ -16,6 +17,7 @@ async function Pokemons_array() {
       listaP.push(infoPokemon);
     })
   );
+  console.log(listaP);
   return listaP;
 }
 // só quem vai usar isso é o input search
@@ -26,7 +28,7 @@ async function PesquisarPokemon(pokemon) {
     ).json();
     return pokemonPesquisado;
   } else {
-    return "não era pra retornar";
+    return null;
   }
 }
 

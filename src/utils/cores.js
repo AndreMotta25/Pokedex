@@ -8,6 +8,7 @@ export function handleGenerateBG(type) {
     poison: "#8366D4",
     bug: "#D168E2",
     psychic: "#AF25DF",
+    ghost: "#B4A5AF",
   };
   return types[type] || "#ccc";
 }
